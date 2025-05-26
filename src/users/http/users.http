@@ -8,8 +8,14 @@ Content-Type: application/json
     "nick":"doge1"
 }
 
-### get user by id
-GET http://localhost:3000/users?email=elon@mars.com
+### get user by email
+GET http://localhost:3000/users?email=elon2@mars.com
 
-### get all users
-GET http://localhost:3000/users
+### login
+POST http://localhost:3000/users/login
+Content-Type: application/json
+
+{
+    "email":"elon@mars.com",
+    "password":"wegomars"
+}

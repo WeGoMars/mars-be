@@ -12,13 +12,9 @@ export class UsersService {
         return await this.repo.findOne({ where: { email } });
     };
 
-    async create(createUserDto: CreateUserDto): Promise<User> {
-        const user = this.repo.create(createUserDto);
+    async create({email,password,nick}): Promise<User> {
+        const user = this.repo.create({email,password,nick});
         return await this.repo.save(user);
-    }
-
-    async findAll(): Promise<User[]> {
-        return await this.repo.find();
     }
 
 }
