@@ -1,29 +1,24 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dtos/create-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from './entity/user.entity';
 
 @Injectable()
 export class UsersService {
-    private count = 3;
-    private users = [
-        { id: 1, email:"aa@aaa.com", password:"123",nick: 'Alice' },
-        { id: 2, email:"bb@bbb.com", password:"1234",nick: 'Bob' }
-    ];
+    constructor(@InjectRepository(User) private repo: Repository<User>) { }
 
-    findAll() {
-        return this.users;
-    }
-
-    findOne(id: number) {
-        return this.users.find(user => user.id === id);
-    }
-
-    create(user:CreateUserDto){
-        this.users.push({
-            id: this.count++, 
-            email: user.email,
-            password: user.password,
-            nick: user.nick
-        });
+    async findOne(email: string): Promise<User | null> {
+        return await this.repo.findOne({ where: { email } });
     };
+
+    async create(createUserDto: CreateUserDto): Promise<User> {
+        const user = this.repo.create(createUserDto);
+        return await this.repo.save(user);
+    }
+
+    async findAll(): Promise<User[]> {
+        return await this.repo.find();
+    }
 
 }
