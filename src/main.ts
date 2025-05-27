@@ -12,6 +12,6 @@ async function bootstrap() {
   app.use(cookieSession({
     keys: ["mysessionkey"]
   }))
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 4000);
 }
 bootstrap();
