@@ -1,0 +1,53 @@
+name: Deploy Backend on Main Push
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+
+      - name: Install dependencies and build
+        run: |
+          npm ci
+          npm run build
+
+      - name: Prepare deploy directory
+        run: |
+          mkdir deploy
+          cp -r dist deploy/
+          cp package.json package-lock.json deploy/
+
+      - name: Clean server build directory
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.AWS_HOST }}
+          username: ${{ secrets.AWS_USER }}
+          key: ${{ secrets.AWS_CI_KEY }}
+          script: |
+            rm -rf ~/infra/backend/build/*
+
+      - name: Copy build artifacts to server
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.AWS_HOST }}
+          username: ${{ secrets.AWS_USER }}
+          key: ${{ secrets.AWS_CI_KEY }}
+          source: "deploy/*"
+          target: "~/infra/backend/build"
+
+      - name: Restart Docker Compose
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.AWS_HOST }}
+          username: ${{ secrets.AWS_USER }}
+          key: ${{ secrets.AWS_CI_KEY }}
+          script: |
+            cd ~/infra
+            docker compose down
+            docker compose up -d --build
