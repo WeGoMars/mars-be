@@ -1,0 +1,20 @@
+name: Test SSH Connection
+
+on:
+  workflow_dispatch:  # 수동 실행 트리거
+
+jobs:
+  ssh-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Test SSH into AWS server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.AWS_HOST }}
+          username: ${{ secrets.AWS_USER }}
+          key: ${{ secrets.AWS_CI_KEY }}
+          script: |
+            echo "✅ SSH 연결 성공!"
+            hostname
+            uptime
