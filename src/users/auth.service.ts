@@ -4,6 +4,7 @@ import { randomBytes, scrypt as _scrypt } from "crypto";
 import { promisify } from "util";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { SigninDto } from "./dto/signin.dto";
+import { UserDto } from "./dto/user.dto";
 
 const scrypt = promisify(_scrypt);
 
@@ -33,7 +34,7 @@ export class AuthService {
         return user;
     }
 
-    async signin(dto: SigninDto) {
+    async signin(dto: SigninDto):Promise<UserDto> {
         const { email, password } = dto;
         //console.log(email,password);
         const user = await this.usersService.findOne(email);
