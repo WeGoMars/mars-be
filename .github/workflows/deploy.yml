@@ -38,7 +38,7 @@ jobs:
           host: ${{ secrets.AWS_HOST }}
           username: ${{ secrets.AWS_USER }}
           key: ${{ secrets.AWS_CI_KEY }}
-          source: "deploy/*"
+          source: "deploy/**"
           target: "~/infra/backend/build"
 
       - name: Restart Docker Compose
