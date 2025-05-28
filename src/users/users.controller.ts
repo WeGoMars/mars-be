@@ -1,12 +1,11 @@
 import { Body, Controller, Get, Param, Query, Post, Session, NotFoundException, HttpCode } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto } from './dto/request/create-user.dto';
 import { UsersService } from './users.service';
-import { Serialize } from 'src/interceptors/serialize.interceptor';
-import { UserDto } from './dto/user.dto';
+import { BaseResponseDto } from 'src/common/dtos/base-response.dto';
+import { UserDto } from './dto/response/user.dto';
 import { AuthService } from './auth.service';
-import { SigninDto } from './dto/signin.dto';
+import { SigninDto } from './dto/request/signin.dto';
 
-@Serialize(UserDto)
 @Controller('users')
 export class UsersController {
     constructor(
@@ -14,15 +13,15 @@ export class UsersController {
         private authService: AuthService
     ) { }
 
-    @Post()
+    @Post('/signup')
     async createUser(@Body() body: CreateUserDto, @Session() session: any) {
         const user = await this.authService.signup(body);
         session.user = user;
-        return user;
+        const responseUser = new UserDto(user.id,user.email,user.nick);
+        return new BaseResponseDto<UserDto>(responseUser,"User registered successfully.");
     }
 
     @Post('/login')
-    @HttpCode(200)
     async login(@Body() body: SigninDto, @Session() session: any) {
         const user = await this.authService.signin(body);
         session.user = user;

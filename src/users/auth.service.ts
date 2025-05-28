@@ -2,9 +2,9 @@ import { BadRequestException, Body, Injectable, NotFoundException } from "@nestj
 import { UsersService } from "./users.service";
 import { randomBytes, scrypt as _scrypt } from "crypto";
 import { promisify } from "util";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { SigninDto } from "./dto/signin.dto";
-import { UserDto } from "./dto/user.dto";
+import { CreateUserDto } from "./dto/request/create-user.dto";
+import { SigninDto } from "./dto/request/signin.dto";
+import { UserDto } from "./dto/response/user.dto";
 
 const scrypt = promisify(_scrypt);
 
