@@ -1,10 +1,10 @@
 import { Body, Controller, Get, Param, Query, Post, Session, NotFoundException, HttpCode } from '@nestjs/common';
-import { CreateUserDto } from './dto/request/create-user.dto';
+import { CreateUserDto } from './dtos/request/create-user.dto';
 import { UsersService } from './users.service';
 import { BaseResponseDto } from 'src/common/dtos/base-response.dto';
-import { UserDto } from './dto/response/user.dto';
+import { UserDto } from './dtos/response/user.dto';
 import { AuthService } from './auth.service';
-import { SigninDto } from './dto/request/signin.dto';
+import { SigninDto } from './dtos/request/signin.dto';
 
 @Controller('users')
 export class UsersController {
