@@ -1,24 +1,24 @@
-### create user
-POST http://localhost:4000/users/signup
+### Request : sign up
+POST http://localhost:4000/users/
 Content-Type: application/json
 
 {
-    "email":"elon@mars.com",
+    "email":"elon5@mars.com",
     "password":"wegomars",
-    "nick":"doge1"
+    "nick":"doge1"  
 }
+### Response : Success {"success":true,"message":"User registered successfully.","data":{"id":2,"email":"elon5@mars.com","nick":"doge1"}}
+### Response : fail {"success":false,"message":"User Already Exists"}
 
-### get user by email
-GET http://localhost:3000/users?email=elon2@mars.com
-
-### login
-POST http://localhost:3000/users/login
+### Request : sign in
+POST http://localhost:4000/users/login
 Content-Type: application/json
 
 {
-    "email":"2elon@mars.com",
+    "email":"elon22@mars.com",
     "password":"wegomars"
 }
 
-### whoami
-GET http://localhost:3000/users/whoami
+### Response : Success {"success":true,"message":"sign in successful.","data":{"id":2,"email":"elon5@mars.com","nick":"doge1"}}
+### Response : fail {"success":false,"message":"bad password"}
+### Response : fail {"success":false,"message":"user not found"}

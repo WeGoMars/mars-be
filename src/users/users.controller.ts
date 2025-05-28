@@ -13,28 +13,26 @@ export class UsersController {
         private authService: AuthService
     ) { }
 
-    @Post('/signup')
+    @Post()
     async createUser(@Body() body: CreateUserDto, @Session() session: any) {
         const user = await this.authService.signup(body);
         session.user = user;
-        const responseUser = new UserDto(user.id,user.email,user.nick);
-        return new BaseResponseDto<UserDto>(responseUser,"User registered successfully.");
+        const responseUser = new UserDto(user.id, user.email, user.nick);
+        return new BaseResponseDto<UserDto>(responseUser, "User registered successfully.");
     }
 
     @Post('/login')
     async login(@Body() body: SigninDto, @Session() session: any) {
         const user = await this.authService.signin(body);
         session.user = user;
-        return user;
+        const responseUser = new UserDto(user.id, user.email, user.nick);
+        return new BaseResponseDto<UserDto>(responseUser, "sign in successful.");
     }
 
     @Get('whoami')
-    whoami(@Session() session:any){
+    whoami(@Session() session: any) {
         return session.user;
     }
 
-    @Get()
-    findByEmail(@Query('email') email: string) {
-        return this.usersService.findOne(email);
-    }
+
 }
