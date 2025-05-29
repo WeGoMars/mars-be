@@ -9,11 +9,11 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { Stock } from './Stock.entity';
+import { Stock } from './stock.entity';
 
 @Entity()
-@Unique(['stock', 'interval']) // 종목 + 주기 조합당 1건 유지
-@Index(['stock', 'interval'])  // 빠른 조회를 위한 인덱스
+@Unique('UQ_STOCK_OHLCV_TODAY', ['stock', 'interval'])
+@Index('IDX_STOCK_OHLCV_TODAY', ['stock', 'interval'])
 export class StockOhlcvToday {
   @PrimaryGeneratedColumn()
   id: number;

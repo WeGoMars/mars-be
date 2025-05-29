@@ -9,11 +9,11 @@ import {
   UpdateDateColumn,
   JoinColumn
 } from 'typeorm';
-import { Stock } from './Stock.entity';
+import { Stock } from './stock.entity';
 
 @Entity()
-@Unique(['stock', 'timestamp', 'interval'])
-@Index(['stock', 'timestamp', 'interval'])
+@Unique('UQ_STOCK_OHLCV',['stock', 'timestamp', 'interval'])
+@Index('IDX_STOCK_OHLCV', ['stock', 'timestamp', 'interval'])
 export class StockOhlcv {
   @PrimaryGeneratedColumn()
   id: number;

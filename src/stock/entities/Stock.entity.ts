@@ -7,7 +7,8 @@ import {
   Unique,
   OneToMany,
 } from 'typeorm';
-import { StockOhlcv } from './Stock-Ohlcv.entity';
+import { StockOhlcv } from './stock-ohlcv.entity';
+import { StockOhlcvToday } from './stock-ohlcv-today.entity';
 
 @Entity()
 @Unique(['symbol'])
@@ -32,6 +33,9 @@ export class Stock {
 
   @OneToMany(() => StockOhlcv, ohlcv => ohlcv.stock)
   ohlcvs: StockOhlcv[];
+
+  @OneToMany(() => StockOhlcvToday, today => today.stock)
+  ohlcvTodayList: StockOhlcvToday[];
 
   @CreateDateColumn()
   createdAt: Date;
