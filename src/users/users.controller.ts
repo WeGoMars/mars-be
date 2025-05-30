@@ -39,6 +39,9 @@ export class UsersController {
     if (!session.user) throw new NotFoundException("Not logged in");
 
     const updatedUser = await this.usersService.updateNickname(session.user.id, body.nick);
+
+    session.user.nick = updatedUser.nick;
+
     return new BaseResponseDto<UserDto>(
         new UserDto(updatedUser.id, updatedUser.email, updatedUser.nick),
         "닉네임이 수정되었습니다."

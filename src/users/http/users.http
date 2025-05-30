@@ -29,4 +29,4 @@ Content-Type: application/json
 ### Response : fail {"success":false,"message":"bad password"}
 ### Response : fail {"success":false,"message":"user not found"}
 ### Request : whoami
-# GET http://localhost:4000/users/whoami
+GET http://localhost:4000/users/whoami
