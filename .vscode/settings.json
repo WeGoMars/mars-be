@@ -9,11 +9,11 @@
             "server": "localhost",
             "port": 3306,
             "driver": "MySQL",
-            "name": "mars",
-            "group": "aa",
             "database": "mars",
             "username": "mars_user",
-            "password": "mars_pass"
+            "password": "mars_password",
+            "name": "a",
+            "group": "a"
         }
     ]
 }

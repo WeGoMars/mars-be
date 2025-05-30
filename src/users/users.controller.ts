@@ -1,10 +1,11 @@
-import { Body, Controller, Get, Param, Query, Post, Session, NotFoundException, HttpCode } from '@nestjs/common';
+import { Body, Controller, Get, Param, Query, Post, Session, NotFoundException, HttpCode, Patch } from '@nestjs/common';
 import { CreateUserDto } from './dto/request/create-user.dto';
 import { UsersService } from './users.service';
 import { BaseResponseDto } from 'src/common/dtos/base-response.dto';
 import { UserDto } from './dto/response/user.dto';
 import { AuthService } from './auth.service';
 import { SigninDto } from './dto/request/signin.dto';
+import { UpdateNicknameDto } from './dto/request/update-nickname.dto';
 
 @Controller('users')
 export class UsersController {
@@ -32,6 +33,16 @@ export class UsersController {
     @Get('whoami')
     whoami(@Session() session: any) {
         return session.user;
+    }
+    @Patch()
+    async updateNickname(@Body() body: UpdateNicknameDto, @Session() session: any) {
+    if (!session.user) throw new NotFoundException("Not logged in");
+
+    const updatedUser = await this.usersService.updateNickname(session.user.id, body.nick);
+    return new BaseResponseDto<UserDto>(
+        new UserDto(updatedUser.id, updatedUser.email, updatedUser.nick),
+        "닉네임이 수정되었습니다."
+    );
     }
 
 
