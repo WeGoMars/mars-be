@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { Stock } from './stock.entity';
 
+
 @Entity()
 @Unique('UQ_STOCK_OHLCV',['stock', 'timestamp', 'interval'])
 @Index('IDX_STOCK_OHLCV', ['stock', 'timestamp', 'interval'])

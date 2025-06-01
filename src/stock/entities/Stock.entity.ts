@@ -14,6 +14,7 @@ import { StockOhlcvToday } from './stock-ohlcv-today.entity';
 @Unique(['symbol'])
 export class Stock {
   @PrimaryGeneratedColumn()
+  
   id: number;
 
   @Column()
