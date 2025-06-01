@@ -5,12 +5,18 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Stock } from './entities/stock.entity';
 import { StockOhlcv } from './entities/stock-ohlcv.entity';
 import { StockOhlcvToday } from './entities/stock-ohlcv-today.entity';
+import { StockFinancials } from './entities/stock-financial.entity';
+import { SectorPerformance } from './entities/stock-sector-performance.entity';
+import { StockMarket } from './entities/stock-market.entity';
 
 @Module({
   imports:[TypeOrmModule.forFeature([
     Stock,
     StockOhlcv,
-    StockOhlcvToday
+    StockOhlcvToday,
+    StockFinancials,
+    SectorPerformance,
+    StockMarket,
   ])],
   controllers: [StockController],
   providers: [StockService]

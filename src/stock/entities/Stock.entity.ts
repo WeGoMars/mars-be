@@ -23,9 +23,6 @@ export class Stock {
   name: string;
 
   @Column()
-  market: string;
-
-  @Column()
   sector: string;
 
   @Column()
