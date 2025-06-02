@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { StockOhlcv } from './stock-ohlcv.entity';
 import { StockOhlcvToday } from './stock-ohlcv-today.entity';
+import { StockFinancials } from './stock-financial.entity';
 
 @Entity()
 @Unique(['symbol'])
@@ -34,6 +35,9 @@ export class Stock {
 
   @OneToMany(() => StockOhlcvToday, today => today.stock)
   ohlcvTodayList: StockOhlcvToday[];
+
+  @OneToMany(() => StockFinancials, finance => finance.stock)
+  financials: StockFinancials[];
 
   @CreateDateColumn()
   createdAt: Date;

@@ -3,17 +3,12 @@
 ### Request : Get stock list
 GET {{host}}/stocks/symbols
 
-#Response
-#[
-#   {"id":1, "symbol:"A"},
-#   {"id":1, "symbol:"AAPL"}
-#]
-# 위 형식으로 503개의 목록 전체 리턴
-
 ### Request : Get Chart with variables
 @symbol = AAPL
 @interval = 1h
 @limit = 2
 GET {{host}}/stocks/chart?symbol={{symbol}}&interval={{interval}}&limit={{limit}}
 
-### Request : sign in
+### Request : get Detailed Stock data
+@symbol = AAPd
+GET {{host}}/stocks/{{symbol}}
