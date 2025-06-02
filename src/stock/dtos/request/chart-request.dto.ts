@@ -1,8 +1,8 @@
-import { IsString, IsEnum, IsISO8601 } from 'class-validator';
+import { IsString, IsEnum, IsISO8601, IsNumber } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export enum Interval {
-  OneMinute = '1min',
-  FiveMinutes = '5min',
+  OneHour = '1h',
   OneDay = '1day',
   OneWeek = '1week',
   OneMonth = '1month'
@@ -17,6 +17,7 @@ export class ChartRequestDto {
   })
   interval: Interval;
 
-  @IsISO8601({}, { message: 'queryDate must be a valid ISO 8601 date string' })
-  requestTime: string;
+  @Type(() => Number)
+  @IsNumber()
+  limit: number
 }

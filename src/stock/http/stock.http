@@ -12,8 +12,8 @@ GET {{host}}/stocks/symbols
 
 ### Request : Get Chart with variables
 @symbol = AAPL
-@interval = 1day
-@requestTime = 2024-05-28T14:00:00Z
-GET {{host}}/stocks/chart?symbol={{symbol}}&interval={{interval}}&requestTime={{requestTime}}
+@interval = 1h
+@limit = 2
+GET {{host}}/stocks/chart?symbol={{symbol}}&interval={{interval}}&limit={{limit}}
 
 ### Request : sign in

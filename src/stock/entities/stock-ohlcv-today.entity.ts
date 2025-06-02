@@ -30,7 +30,7 @@ export class StockOhlcvToday {
   interval: '15min' | '1h';
 
   @Column({ type: 'datetime' })
-  timestamp: Date;
+  timestamp: string;
 
   @Column('float')
   open: number;
