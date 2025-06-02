@@ -1,5 +1,15 @@
 @host = http://localhost:4000
 
+### Request : Get stock list
+GET {{host}}/stocks/symbols
+
+#Response
+#[
+#   {"id":1, "symbol:"A"},
+#   {"id":1, "symbol:"AAPL"}
+#]
+# 위 형식으로 503개의 목록 전체 리턴
+
 ### Request : Get Chart with variables
 @symbol = AAPL
 @interval = 1day

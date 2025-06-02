@@ -6,5 +6,13 @@ import { StockOhlcv } from './entities/stock-ohlcv.entity';
 
 @Injectable()
 export class StockService {
-    
+    constructor(
+        @InjectRepository(Stock) private stockRepo:Repository<Stock>
+    ){}
+
+    getSymbols(){
+        return this.stockRepo.find({
+            select: ['id','symbol'],
+        });
+    }
 }
