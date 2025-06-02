@@ -1,4 +1,4 @@
-import { IsString, IsEnum, IsISO8601, IsNumber } from 'class-validator';
+import { IsString, IsEnum, Max, IsNumber } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export enum Interval {
@@ -19,5 +19,6 @@ export class ChartRequestDto {
 
   @Type(() => Number)
   @IsNumber()
+  @Max(120, { message: 'limit must be 120 or less' })
   limit: number
 }

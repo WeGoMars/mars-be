@@ -24,5 +24,4 @@ export class StockController {
         const response = new BaseResponseDto(data,`${param}'s detailed data`);
         return response;
     }
-    
 }
