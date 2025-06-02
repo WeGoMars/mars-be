@@ -11,9 +11,10 @@ import {
 } from 'typeorm';
 import { Stock } from './stock.entity';
 
+
 @Entity()
-@Unique('UQ_STOCK_OHLCV_TODAY', ['stock', 'interval'])
-@Index('IDX_STOCK_OHLCV_TODAY', ['stock', 'interval'])
+@Unique('UQ_STOCK_OHLCV_TODAY', ['stock', 'interval','timestamp'])
+@Index('IDX_STOCK_OHLCV_TODAY', ['stock', 'interval','timestamp'])
 export class StockOhlcvToday {
   @PrimaryGeneratedColumn()
   id: number;
@@ -24,11 +25,11 @@ export class StockOhlcvToday {
 
   @Column({
     type: 'enum',
-    enum: ['15min', '60min'],
+    enum: ['15min', '1h'],
   })
-  interval: '15min' | '60min';
+  interval: '15min' | '1h';
 
-  @Column({ type: 'datetime' }) // 해당 캔들의 기준 시각
+  @Column({ type: 'datetime' })
   timestamp: Date;
 
   @Column('float')

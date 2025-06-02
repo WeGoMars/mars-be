@@ -8,7 +8,7 @@ export class StockController {
     constructor(private stockService:StockService){}
     @Get('/symbols')
     getSymbols(){
-
+        return this.stockService.getSymbols();
     }
 
     @Get('/chart')

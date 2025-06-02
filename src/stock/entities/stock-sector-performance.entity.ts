@@ -12,6 +12,7 @@ import {
 @Unique('UQ_SECTOR_PERFORMANCE', ['date', 'sector'])
 @Index('IDX_SECTOR_PERFORMANCE', ['date', 'sector'])
 export class SectorPerformance {
+  
   @PrimaryGeneratedColumn()
   id: number;
 
