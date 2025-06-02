@@ -1,4 +1,4 @@
-@host = http://localhost:4000
+@host = http://localhost:4000/api
 
 ### Request : sign up
 POST {{host}}/users/
@@ -10,62 +10,20 @@ Content-Type: application/json
   "nick": "doge1"
 }
 
-### Response : Success
-# {
-#   "success": true,
-#   "message": "User registered successfully.",
-#   "data": {
-#     "id": 2,
-#     "email": "elon5@mars.com",
-#     "nick": "doge1"
-#   }
-# }
-
-### Response : fail
-# {
-#   "success": false,
-#   "message": "User Already Exists"
-# }
-
----
-
 ### Request : sign in
 POST {{host}}/users/login
 Content-Type: application/json
 
 {
-  "email": "elon22@mars.com",
+  "email": "elon5@mars.com",
   "password": "wegomars"
 }
 ### Request : update nickname
-PATCH http://localhost:4000/users
+PATCH {{host}}/users/
 Content-Type: application/json
 
 {
   "nick": "doge1"
 }
-### Response : Success
-# {
-#   "success": true,
-#   "message": "sign in successful.",
-#   "data": {
-#     "id": 2,
-#     "email": "elon5@mars.com",
-#     "nick": "doge1"
-#   }
-# }
-
-### Response : fail (bad password)
-# {
-#   "success": false,
-#   "message": "bad password"
-# }
-
-### Response : fail (user not found)
-# {
-#   "success": false,
-#   "message": "user not found"
-# }
-
 ### Request : whoami
-GET http://localhost:4000/users/whoami
+GET {{host}}/users/whoami
