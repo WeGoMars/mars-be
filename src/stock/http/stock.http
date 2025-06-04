@@ -1,4 +1,4 @@
-@host = http://localhost:4000
+@host = http://localhost:4000/api
 
 ### Request : Get stock list
 GET {{host}}/stocks/symbols
@@ -12,3 +12,8 @@ GET {{host}}/stocks/chart?symbol={{symbol}}&interval={{interval}}&limit={{limit}
 ### Request : get Detailed Stock data
 @symbol = AAPd
 GET {{host}}/stocks/{{symbol}}
+
+### Request : search stocks by symbol and name
+@query = AA
+@limit = 20
+GET {{host}}/stocks/search?query={{query}}&limit={{limit}}

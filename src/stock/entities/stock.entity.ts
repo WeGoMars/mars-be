@@ -4,7 +4,7 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  Unique,
+  Index,
   OneToMany,
 } from 'typeorm';
 import { StockOhlcv } from './stock-ohlcv.entity';
@@ -12,16 +12,16 @@ import { StockOhlcvToday } from './stock-ohlcv-today.entity';
 import { StockFinancials } from './stock-financial.entity';
 
 @Entity()
-@Unique(['symbol'])
 export class Stock {
   @PrimaryGeneratedColumn()
   
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   symbol: string;
 
   @Column()
+  @Index('IDX_STOCK_NAME')
   name: string;
 
   @Column()
