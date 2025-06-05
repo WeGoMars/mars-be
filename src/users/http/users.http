@@ -27,3 +27,6 @@ Content-Type: application/json
 }
 ### Request : whoami
 GET {{host}}/users/whoami
+
+### Request : log out
+GET {{host}}/users/logout

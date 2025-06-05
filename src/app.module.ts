@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { User } from './users/entities/user.entity';
 import { StockModule } from './stock/stock.module';
+import { WalletModule } from './wallet/wallet.module';
 
 @Module({
   imports: [
@@ -35,6 +36,8 @@ import { StockModule } from './stock/stock.module';
     UsersModule,
 
     StockModule,
+
+    WalletModule,
   ],
   controllers: [AppController],
   providers: [AppService],
