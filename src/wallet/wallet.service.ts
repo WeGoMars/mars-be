@@ -21,6 +21,9 @@ export class WalletService {
             where: { id: user.id },
             relations: ['wallet']
         })
+        if(!rawData?.wallet?.cyberDollar){
+            throw new BadRequestException('this user have no wallet!');
+        }
         const data = {
             email: rawData?.email,
             nick: rawData?.nick,
