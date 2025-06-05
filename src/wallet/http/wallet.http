@@ -5,7 +5,7 @@ POST {{host}}/users/login
 Content-Type: application/json
 
 {
-  "email": "elon5@mars.com",
+  "email": "elon7@mars.com",
   "password": "wegomars"
 }
 
@@ -14,3 +14,21 @@ GET {{host}}/users/logout
 
 ### Request : get my wallet
 GET {{host}}/wallets
+
+### Request : create my wallet
+POST {{host}}/wallets
+Content-Type: application/json
+
+{
+  "amount": 100000
+}
+
+
+
+### Request : update my wallet
+PUT {{host}}/wallets
+Content-Type: application/json
+
+{
+  "amount": "100000"
+}

@@ -1,7 +1,8 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Unique, Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { User } from "src/users/entities/user.entity";
 
 @Entity()
+@Unique(['user'])
 export class Wallet {
   @PrimaryGeneratedColumn()
   id: number;
@@ -10,7 +11,7 @@ export class Wallet {
   @JoinColumn()
   user: User;
 
-  @Column({ type: 'decimal', precision: 15, scale: 2, default: 0 })k
+  @Column({ type: 'float', default: 0 })
   cyberDollar: number;
 
   @CreateDateColumn()

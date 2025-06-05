@@ -18,17 +18,15 @@ export class UsersController {
     @Post()
     async createUser(@Body() body: CreateUserDto, @Session() session: any) {
         const user = await this.authService.signup(body);
-        session.user = user;
-        const responseUser = new UserDto(user.id, user.email, user.nick);
-        return new BaseResponseDto<UserDto>(responseUser, "User registered successfully.");
+        session.user = new UserDto({ id: user.id, email: user.email, nick: user.nick });
+        return new BaseResponseDto<UserDto>(session.user, "User registered successfully.");
     }
 
     @Post('/login')
     async login(@Body() body: SigninDto, @Session() session: any) {
         const user = await this.authService.signin(body);
-        session.user = user;
-        const responseUser = new UserDto(user.id, user.email, user.nick);
-        return new BaseResponseDto<UserDto>(responseUser, "sign in successful.");
+        session.user = new UserDto({ id: user.id, email: user.email, nick: user.nick });
+        return new BaseResponseDto<UserDto>(session.user, "sign in successful.");
     }
 
     @Get('whoami')
@@ -44,7 +42,7 @@ export class UsersController {
         session.user.nick = updatedUser.nick;
 
         return new BaseResponseDto<UserDto>(
-            new UserDto(updatedUser.id, updatedUser.email, updatedUser.nick),
+            new UserDto({ id: updatedUser.id, email: updatedUser.email, nick: updatedUser.nick }),
             "닉네임이 수정되었습니다."
         );
     }

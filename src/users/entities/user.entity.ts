@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToOne } from 'typeorm';
+import { Wallet } from 'src/wallet/entities/wallet.entity';
 
 @Entity()
 export class User {
@@ -14,10 +15,13 @@ export class User {
     @Column()
     nick: string;
 
+    @OneToOne(() => Wallet, wallet => wallet.user)
+    wallet: Wallet | null;
+
     @CreateDateColumn()
     createdAt: Date;
 
     @UpdateDateColumn()
     updatedAt: Date;
-    
+
 }
