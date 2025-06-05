@@ -14,6 +14,6 @@ GET {{host}}/stocks/chart?symbol={{symbol}}&interval={{interval}}&limit={{limit}
 GET {{host}}/stocks/{{symbol}}
 
 ### Request : search stocks by symbol and name
-@query = AA
-@limit = 20
+@query = A
+@limit = 10
 GET {{host}}/stocks/search?query={{query}}&limit={{limit}}

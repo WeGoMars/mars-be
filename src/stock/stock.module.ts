@@ -8,6 +8,7 @@ import { StockOhlcvToday } from './entities/stock-ohlcv-today.entity';
 import { StockFinancials } from './entities/stock-financial.entity';
 import { SectorPerformance } from './entities/stock-sector-performance.entity';
 import { StockMarket } from './entities/stock-market.entity';
+import { StockLatestPriceView } from './entities/stock-latest-price.view';
 
 @Module({
   imports:[TypeOrmModule.forFeature([
@@ -17,6 +18,7 @@ import { StockMarket } from './entities/stock-market.entity';
     StockFinancials,
     SectorPerformance,
     StockMarket,
+    StockLatestPriceView,
   ])],
   controllers: [StockController],
   providers: [StockService]
