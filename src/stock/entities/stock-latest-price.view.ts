@@ -10,6 +10,7 @@ import { ViewEntity, ViewColumn, PrimaryColumn, DataSource } from 'typeorm';
     .addSelect('s.industry', 'industry')
     .addSelect('d.close', 'daily_close')
     .addSelect('h.close', 'hourly_close')
+    .addSelect('h.volume', 'hourly_volume')
     .from('stock', 's')
     .leftJoin(
       qb => qb
@@ -34,6 +35,7 @@ import { ViewEntity, ViewColumn, PrimaryColumn, DataSource } from 'typeorm';
       qb => qb
         .select('o2.stock_id', 'stock_id')
         .addSelect('o2.close', 'close')
+        .addSelect('o2.volume', 'volume')
         .from('stock_ohlcv_today', 'o2')
         .innerJoin(
           qb2 => qb2

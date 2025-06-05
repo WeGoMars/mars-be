@@ -10,10 +10,10 @@ GET {{host}}/stocks/symbols
 GET {{host}}/stocks/chart?symbol={{symbol}}&interval={{interval}}&limit={{limit}}
 
 ### Request : get Detailed Stock data
-@symbol = AAPd
+@symbol = AAPL
 GET {{host}}/stocks/{{symbol}}
 
 ### Request : search stocks by symbol and name
 @query = A
-@limit = 10
+@limit = 2
 GET {{host}}/stocks/search?query={{query}}&limit={{limit}}
