@@ -4,6 +4,7 @@ import { ChartRequestDto } from './dtos/request/chart-request.dto';
 import { SearchStocksDto } from './dtos/request/search-stocks.dto';
 import { StockService } from './stock.service';
 import { ListStocksDto, Option } from './dtos/request/list-stocks.dto';
+import { SearchedStock } from './dtos/response/searched-stock.dto';
 
 @Controller('stocks')
 export class StockController {
@@ -29,16 +30,16 @@ export class StockController {
 
     @Get('list')
     async listStocks(@Query() query: ListStocksDto) {
-        let data = [];
+        let data: SearchedStock[] = [];
         switch(query.option){
             case Option.HOT:
-                // data = await this.stockService.listHotStocks(query);
+                data = await this.stockService.listHotStocks(query);
                 break;
             default:
                 throw new BadRequestException('아직 HOT 이외엔 미구현');
         }
 
-        const response = new BaseResponseDto(data, 'search succesful');
+        const response = new BaseResponseDto(data, 'listing succesful');
         return response;
     }
 

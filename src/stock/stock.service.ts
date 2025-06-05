@@ -10,7 +10,7 @@ import { StockFinancials } from './entities/stock-financial.entity';
 import { DetailedStockResponseDto } from './dtos/response/detailed-stock.dto';
 import { NotFoundException } from '@nestjs/common';
 import { SearchStocksDto } from './dtos/request/search-stocks.dto';
-import { SearchedStock } from './dtos/response/search-stock.dto';
+import { SearchedStock } from './dtos/response/searched-stock.dto';
 import { ListStocksDto } from './dtos/request/list-stocks.dto';
 import { StockLatestPriceView } from './entities/stock-latest-price.view';
 
@@ -99,7 +99,6 @@ export class StockService {
         qb.where('view.symbol = :symbol', { symbol: symbolParam });
 
         const result = await qb.getRawOne();
-        console.log(result);
         return new DetailedStockResponseDto(result);
     }
 
@@ -126,6 +125,7 @@ export class StockService {
             'stockview.industry AS industry',
             'stockview.daily_close AS dailyClose',
             'stockview.hourly_close AS hourlyClose',
+            'stockview.hourly_volume AS hourlyVolume',
         ]);
 
         const rawData = await qb.getRawMany();
@@ -134,8 +134,28 @@ export class StockService {
     }
 
 
-    async listHotStocks(query: ListStocksDto) {
+    async listHotStocks(query: ListStocksDto): Promise<SearchedStock[]> {
+        const qb = this.stockViewRepo.createQueryBuilder('stockview');
 
+        qb.select([
+            'stockview.stock_id AS stock_id',
+            'stockview.symbol AS symbol',
+            'stockview.name AS name',
+            'stockview.sector AS sector',
+            'stockview.industry AS industry',
+            'stockview.daily_close AS dailyClose',
+            'stockview.hourly_close AS hourlyClose',
+            'stockview.hourly_volume AS hourlyVolume',
+        ]);
+
+        qb.orderBy('stockview.hourly_volume', 'DESC');
+
+        const limit = query.limit ?? 20;
+        qb.take(limit);
+
+        const rawData = await qb.getRawMany();
+        return rawData.map(row => new SearchedStock(row));
     }
+
 
 }

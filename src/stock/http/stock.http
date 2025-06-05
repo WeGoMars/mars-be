@@ -17,3 +17,9 @@ GET {{host}}/stocks/{{symbol}}
 @query = A
 @limit = 2
 GET {{host}}/stocks/search?query={{query}}&limit={{limit}}
+
+
+### Request : get stock list by options
+@option = hot
+@limit = 5
+GET {{host}}/stocks/list?option={{option}}&limit={{limit}}

@@ -1,4 +1,4 @@
-import { BaseResponseDto } from "src/common/dtos/base-response.dto";
+
 
 export class SearchedStock {
   symbol: string;
@@ -7,6 +7,7 @@ export class SearchedStock {
   industry: string;
   currentPrice: number;
   priceDelta: number;
+  hourlyVolume: number | null;
 
   constructor(raw: {
     symbol: string;
@@ -15,6 +16,7 @@ export class SearchedStock {
     industry: string;
     dailyClose: number;
     hourlyClose: number | null;
+    hourlyVolume?: number | null;
   }) {
     this.symbol = raw.symbol;
     this.name = raw.name;
@@ -26,5 +28,6 @@ export class SearchedStock {
 
     this.currentPrice = hourly ?? daily;
     this.priceDelta = hourly !== null ? hourly - daily : 0;
+    this.hourlyVolume = raw.hourlyVolume ?? null;
   }
 }

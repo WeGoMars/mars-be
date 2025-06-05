@@ -9,8 +9,6 @@ export enum Option {
 }
 
 export class ListStocksDto {
-    @IsString()
-    query: string;
 
     @Type(() => Number)
     @IsNumber()
