@@ -3,7 +3,7 @@
 export class WalletDto {
     email: string;
     nick: string;
-    cyberDollor: number;
+    cyberDollar: number;
     updatedAt: Date;
     
     constructor(partial: Partial<WalletDto>) {

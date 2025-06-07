@@ -27,7 +27,7 @@ export class WalletService {
         const data = {
             email: rawData?.email,
             nick: rawData?.nick,
-            cyberDollor: rawData?.wallet?.cyberDollar,
+            cyberDollar: rawData?.wallet?.cyberDollar,
             updatedAt: rawData?.wallet?.updatedAt,
         }
         return new WalletDto(data);

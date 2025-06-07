@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { User } from './users/entities/user.entity';
 import { StockModule } from './stock/stock.module';
 import { WalletModule } from './wallet/wallet.module';
+import { TradeModule } from './trade/trade.module';
 
 @Module({
   imports: [
@@ -38,6 +39,8 @@ import { WalletModule } from './wallet/wallet.module';
     StockModule,
 
     WalletModule,
+
+    TradeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

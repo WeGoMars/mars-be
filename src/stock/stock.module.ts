@@ -21,6 +21,7 @@ import { StockLatestPriceView } from './entities/stock-latest-price.view';
     StockLatestPriceView,
   ])],
   controllers: [StockController],
-  providers: [StockService]
+  providers: [StockService],
+  exports:[StockService]
 })
 export class StockModule {}
