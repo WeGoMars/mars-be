@@ -41,7 +41,7 @@ Content-Type: application/json
 
 {
   "symbol": "AAPL",
-  "quantity": "1",
+  "quantity": "1000000",
   "price":"203.96"
 }
 
@@ -51,6 +51,6 @@ Content-Type: application/json
 
 {
   "symbol": "AAPL",
-  "quantity": "1",
+  "quantity": "50000",
   "price":"203.96"
 }

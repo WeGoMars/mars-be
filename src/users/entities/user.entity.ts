@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToOne, OneToMany } from 'typeorm';
 import { Wallet } from 'src/wallet/entities/wallet.entity';
 import { Trade } from 'src/trade/entities/trade.entity';
+import { Like } from 'src/portfolio/entities/like.entity';
 
 @Entity()
 export class User {
@@ -21,6 +22,9 @@ export class User {
 
     @OneToMany(() => Trade, trade => trade.user)
     trades: Trade[] | null;
+
+    @OneToMany(()=>Like, like=>like.user)
+    likes:Like[]|null;
 
     @CreateDateColumn()
     createdAt: Date;
