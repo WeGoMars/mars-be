@@ -1,35 +1,46 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToOne, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToOne,
+  OneToMany,
+} from 'typeorm';
 import { Wallet } from 'src/wallet/entities/wallet.entity';
 import { Trade } from 'src/trade/entities/trade.entity';
 import { Like } from 'src/portfolio/entities/like.entity';
+import { UserPreference } from 'src/ai/entities/user-preference.entity';
 
 @Entity()
 export class User {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column({ unique: true })
-    email: string;
+  @Column({ unique: true })
+  email: string;
 
-    @Column()
-    password: string;
+  @Column()
+  password: string;
 
-    @Column()
-    nick: string;
+  @Column()
+  nick: string;
 
-    @OneToOne(() => Wallet, wallet => wallet.user, { nullable: true })
-    wallet: Wallet | null;
+  @OneToOne(() => Wallet, (wallet) => wallet.user, { nullable: true })
+  wallet: Wallet | null;
 
-    @OneToMany(() => Trade, trade => trade.user)
-    trades: Trade[] | null;
+  @OneToOne(() => UserPreference, (preference) => preference.user, { nullable: true })
+  preference: UserPreference | null;
 
-    @OneToMany(()=>Like, like=>like.user)
-    likes:Like[]|null;
+  @OneToMany(() => Trade, (trade) => trade.user)
+  trades: Trade[] | null;
 
-    @CreateDateColumn()
-    createdAt: Date;
+  @OneToMany(() => Like, (like) => like.user)
+  likes: Like[] | null;
 
-    @UpdateDateColumn()
-    updatedAt: Date;
+  @CreateDateColumn()
+  createdAt: Date;
 
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

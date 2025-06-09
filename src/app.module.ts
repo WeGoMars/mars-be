@@ -9,6 +9,7 @@ import { StockModule } from './stock/stock.module';
 import { WalletModule } from './wallet/wallet.module';
 import { TradeModule } from './trade/trade.module';
 import { PortfolioModule } from './portfolio/portfolio.module';
+import { AiModule } from './ai/ai.module';
 
 @Module({
   imports: [
@@ -44,6 +45,8 @@ import { PortfolioModule } from './portfolio/portfolio.module';
     TradeModule,
 
     PortfolioModule,
+
+    AiModule,
   ],
   controllers: [AppController],
   providers: [AppService],
