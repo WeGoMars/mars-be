@@ -6,13 +6,15 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StockLatestPriceView } from 'src/stock/entities/stock-latest-price.view';
-import { Trade } from 'src/trade/entities/trade.entity';
+import { Trade, TradeType } from 'src/trade/entities/trade.entity';
 import { UserDto } from 'src/users/dtos/response/user.dto';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { LikeDto } from './dtos/request/like.dto';
 import { Like } from './entities/like.entity';
 import { LikeResponse } from './dtos/response/like-response.dto';
 import { LikeStock } from './dtos/response/like-stock.dto';
+import { Stock } from 'src/stock/entities/stock.entity';
+import { MyStock } from './dtos/response/my-stock.dto';
 
 @Injectable()
 export class PortfolioService {
@@ -78,28 +80,75 @@ export class PortfolioService {
         'like.stockView',
         StockLatestPriceView,
         'view',
-        'view.stock_id = like.stock.id'
+        'view.stock_id = like.stock.id',
       )
-      .innerJoinAndSelect('like.stock','stock')
-      .where('like.user.id = :userId',{userId :user.id})
-      .orderBy('like.createdAt','DESC')
+      .innerJoinAndSelect('like.stock', 'stock')
+      .where('like.user.id = :userId', { userId: user.id })
+      .orderBy('like.createdAt', 'DESC')
       .getMany();
 
-      const results = likes.map((like)=>{
-        const view = like.stockView;
-        if(!view){
-          return null;
-        }
-        const data={
-          symbol:like.stockView!.symbol,
-          name:like.stockView!.name,
-          sector:like.stock.sector,
-          industry:like.stock.industry,
-          currentPrice:like.stockView!.hourly_close,
-          priceDelta: (like.stockView!.hourly_close) - (like.stockView!.daily_close)
-        }
-        return new LikeStock(data);
-      })
-      return results;
+    const results = likes.map((like) => {
+      const view = like.stockView;
+      if (!view) {
+        return null;
+      }
+      const data = {
+        symbol: like.stockView!.symbol,
+        name: like.stockView!.name,
+        sector: like.stock.sector,
+        industry: like.stock.industry,
+        currentPrice: like.stockView!.hourly_close,
+        priceDelta: like.stockView!.hourly_close - like.stockView!.daily_close,
+      };
+      return new LikeStock(data);
+    });
+    return results;
+  }
+
+  async getMyStockes(user: UserDto) {
+    const trades = await this.tradeRepo.find({
+      where: { user: { id: user.id } },
+      relations: ['stock'],
+    });
+    const stockQuantityMap = new Map<
+      number,
+      { stock: Stock; netQuantity: number }
+    >();
+
+    for (const trade of trades) {
+      const id = trade.stock.id;
+
+      const prev = stockQuantityMap.get(id) || {
+        stock: trade.stock,
+        netQuantity: 0,
+      };
+
+      const delta =
+        trade.type === TradeType.BUY ? trade.quantity : -trade.quantity;
+
+      stockQuantityMap.set(id, {
+        stock: trade.stock,
+        netQuantity: prev.netQuantity + delta,
+      });
+    }
+
+    const heldStockIds = Array.from(stockQuantityMap.entries())
+      .filter(([_, v]) => v.netQuantity > 0)
+      .map(([id]) => id);
+
+    const stockViews = await this.stockViewRepo.find({
+      where: { stock_id: In(heldStockIds) },
+    });
+    return stockViews.map(
+      (view) =>
+        new MyStock({
+          symbol: view.symbol,
+          name: view.name,
+          sector: view['sector'],
+          industry: view['industry'],
+          currentPrice: view.hourly_close,
+          priceDelta: view.hourly_close - view.daily_close,
+        }),
+    );
   }
 }

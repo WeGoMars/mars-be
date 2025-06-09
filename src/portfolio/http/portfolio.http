@@ -37,3 +37,6 @@ Content-Type: application/json
 
 ### Request : getlike
 GET {{host}}/portfolios/like
+
+### Request : getMyStock
+GET {{host}}/portfolios/list

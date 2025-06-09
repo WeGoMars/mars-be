@@ -30,10 +30,11 @@ export class PortfolioController {
         return new BaseResponseDto(data,'your likes successfully listed');
     }
 
-    @Get()
+    @Get('list')
     async getPortfolio(@Session() session:any){
         const user = getUserOrThrow(session);
-        
+        const data = await this.portfolioService.getMyStockes(user);
+        return new BaseResponseDto(data,'your stock list');
     }
 
 }

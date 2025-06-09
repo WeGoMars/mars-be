@@ -20,7 +20,7 @@ POST {{host}}/wallets
 Content-Type: application/json
 
 {
-  "amount": -1100000
+  "amount": 100000
 }
 
 
