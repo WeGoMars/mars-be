@@ -15,6 +15,10 @@ import { LikeResponse } from './dtos/response/like-response.dto';
 import { LikeStock } from './dtos/response/like-stock.dto';
 import { Stock } from 'src/stock/entities/stock.entity';
 import { MyStock } from './dtos/response/my-stock.dto';
+import { AggregatedPortfolioDto } from './dtos/internal/aggregated-portfolio.dto';
+import { Wallet } from 'src/wallet/entities/wallet.entity';
+import { UserPortfolioDto } from './dtos/response/user-portfolio.dto';
+import { StockPortfolioDto } from './dtos/response/stock-portfolio.dto';
 
 @Injectable()
 export class PortfolioService {
@@ -23,6 +27,7 @@ export class PortfolioService {
     private stockViewRepo: Repository<StockLatestPriceView>,
     @InjectRepository(Trade) private tradeRepo: Repository<Trade>,
     @InjectRepository(Like) private likeRepo: Repository<Like>,
+    @InjectRepository(Wallet) private walletRepo: Repository<Wallet>,
   ) {}
 
   async createLike(user: UserDto, dto: LikeDto) {
@@ -151,4 +156,112 @@ export class PortfolioService {
         }),
     );
   }
+
+  async aggregateUserPortfolio(
+    user: UserDto,
+  ): Promise<AggregatedPortfolioDto[]> {
+    const trades = await this.tradeRepo.find({
+      where: { user: { id: user.id } },
+      relations: ['stock'],
+    });
+
+    const grouped = new Map<
+      number,
+      {
+        stock: Stock;
+        buyQuantity: number;
+        buyCost: number;
+        sellQuantity: number;
+      }
+    >();
+
+    for (const trade of trades) {
+      const id = trade.stock.id;
+      const g = grouped.get(id) ?? {
+        stock: trade.stock,
+        buyQuantity: 0,
+        buyCost: 0,
+        sellQuantity: 0,
+      };
+
+      if (trade.type === TradeType.BUY) {
+        g.buyQuantity += trade.quantity;
+        g.buyCost += trade.price * trade.quantity;
+      } else {
+        g.sellQuantity += trade.quantity;
+      }
+
+      grouped.set(id, g);
+    }
+
+    const held = Array.from(grouped.values()).filter(
+      (g) => g.buyQuantity > g.sellQuantity,
+    );
+    const stockIds = held.map((g) => g.stock.id);
+
+    const priceViews = await this.stockViewRepo.find({
+      where: { stock_id: In(stockIds) },
+    });
+    const priceMap = new Map(priceViews.map((v) => [v.stock_id, v]));
+
+    return held.map((g) => {
+      const quantity = g.buyQuantity - g.sellQuantity;
+      const avgBuyPrice = g.buyCost / g.buyQuantity;
+      const currentPrice = priceMap.get(g.stock.id)?.hourly_close ?? 0;
+      const evalAmount = quantity * currentPrice;
+      const evalGain = evalAmount - quantity * avgBuyPrice;
+      const returnRate =
+        quantity * avgBuyPrice ? evalGain / (quantity * avgBuyPrice) : 0;
+
+      return new AggregatedPortfolioDto({
+        stock: g.stock,
+        quantity,
+        avgBuyPrice,
+        currentPrice,
+        evalAmount,
+        evalGain,
+        returnRate,
+      });
+    });
+  }
+
+  async getMySimplePF(user: UserDto) {
+    const items = await this.aggregateUserPortfolio(user);
+
+    const totalEvalAmount = items.reduce((sum, p) => sum + p.evalAmount, 0);
+    const totalInvested = items.reduce(
+      (sum, p) => sum + p.avgBuyPrice * p.quantity,
+      0,
+    );
+    const evalGain = totalEvalAmount - totalInvested;
+    const returnRate = totalInvested ? evalGain / totalInvested : 0;
+
+    const wallet = await this.walletRepo.findOneOrFail({
+      where: { user: { id: user.id } },
+    });
+
+    return new UserPortfolioDto({
+      totalAsset: totalEvalAmount + wallet.cyberDollar,
+      investedAmount: totalInvested,
+      evalGain,
+      returnRate,
+      totalSeed: wallet.cyberDollarAccum,
+      investRatio: totalInvested / (wallet.cyberDollarAccum || 1),
+      cash: wallet.cyberDollar,
+    });
+  }
+
+  async getMyStockPortfolio(user: UserDto) {
+  const items = await this.aggregateUserPortfolio(user);
+
+  return items.map((item) => new StockPortfolioDto({
+    symbol: item.stock.symbol,
+    name: item.stock.name,
+    quantity: item.quantity,
+    avgBuyPrice: item.avgBuyPrice,
+    evalAmount: item.evalAmount,
+    evalGain: item.evalGain,
+    returnRate: item.returnRate,
+  }));
+}
 }

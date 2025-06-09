@@ -40,3 +40,9 @@ GET {{host}}/portfolios/like
 
 ### Request : getMyStock
 GET {{host}}/portfolios/list
+
+### Request : getMyStock
+GET {{host}}/portfolios/overall
+
+### Request : getMyStock
+GET {{host}}/portfolios/stock

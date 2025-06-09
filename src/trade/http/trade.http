@@ -42,7 +42,7 @@ Content-Type: application/json
 {
   "symbol": "AAPL",
   "quantity": "1",
-  "price":"200.66"
+  "price":"205.66"
 }
 
 ### Request : Sell stock
@@ -52,5 +52,5 @@ Content-Type: application/json
 {
   "symbol": "AAPL",
   "quantity": "1",
-  "price":"200.66"
+  "price":"205.66"
 }
