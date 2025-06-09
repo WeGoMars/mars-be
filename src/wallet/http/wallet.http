@@ -30,5 +30,5 @@ PUT {{host}}/wallets
 Content-Type: application/json
 
 {
-  "amount": "+5000"
+  "amount": "100000"
 }

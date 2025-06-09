@@ -65,7 +65,7 @@ export class WalletService {
             throw new BadRequestException('This user has no wallet!');
         }
         if(delta>0){
-            wallet.cyberDollarAccum +delta;
+            wallet.cyberDollarAccum += delta;
         }
         wallet.cyberDollar += delta;
         const rawData = await this.walletRepo.save(wallet);
