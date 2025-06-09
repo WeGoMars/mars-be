@@ -51,7 +51,7 @@ export class TradeService {
     });
 
     const saved = await this.tradeRepo.save(trade);
-    const savedWallet = await this.walletService.updateWalletBalance(
+    const savedWallet = await this.walletService.addSeedMoney(
       user,
       -priceTotal,
     );
@@ -97,7 +97,7 @@ export class TradeService {
     });
     const priceTotal = dto.quantity * dto.price;
     const saved = await this.tradeRepo.save(trade);
-    const savedWallet = await this.walletService.updateWalletBalance(
+    const savedWallet = await this.walletService.depositToWallet(
       user,
       +priceTotal,
     );

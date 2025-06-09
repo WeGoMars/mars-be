@@ -58,7 +58,7 @@ export class WalletService {
         }
     }
 
-    async updateWalletBalance(user:UserDto, delta:number) {
+    async addSeedMoney(user:UserDto, delta:number) {
         const wallet = await this.walletRepo.findOne({ where: { user: { id: user.id } } });
 
         if (!wallet) {
@@ -76,4 +76,22 @@ export class WalletService {
 
         return new SimpleWalletDto(data);
     }
+
+    async depositToWallet(user:UserDto, delta:number) {
+        const wallet = await this.walletRepo.findOne({ where: { user: { id: user.id } } });
+
+        if (!wallet) {
+            throw new BadRequestException('This user has no wallet!');
+        }
+        wallet.cyberDollar += delta;
+        const rawData = await this.walletRepo.save(wallet);
+        const data = {
+            cyberDollar:rawData.cyberDollar,
+            updatedAt:rawData.updatedAt
+        }
+
+        return new SimpleWalletDto(data);
+    }
+
+    
 }

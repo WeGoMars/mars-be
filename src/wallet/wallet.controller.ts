@@ -27,7 +27,7 @@ export class WalletController {
     @Put()
     async updateWallet(@Session() session: any, @Body() body: CreateWalletDto) {
         const user = getUserOrThrow(session);
-        const simpleWallet =  await this.walletService.updateWalletBalance(user, body.amount);
+        const simpleWallet =  await this.walletService.addSeedMoney(user, body.amount);
         return new BaseResponseDto(simpleWallet,'wallet updated successfully');
     }
 }
