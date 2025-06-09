@@ -21,7 +21,7 @@ export class WalletService {
             where: { id: user.id },
             relations: ['wallet']
         })
-        if(!rawData?.wallet?.cyberDollar){
+        if(!rawData?.wallet){
             throw new BadRequestException('this user have no wallet!');
         }
         const data = {
@@ -38,6 +38,7 @@ export class WalletService {
         const wallet = this.walletRepo.create({
             user: { id: user.id },
             cyberDollar: dto.amount,
+            cyberDollarAccum: dto.amount
         })
         try {
             const created = await this.walletRepo.save(wallet);
@@ -62,6 +63,9 @@ export class WalletService {
 
         if (!wallet) {
             throw new BadRequestException('This user has no wallet!');
+        }
+        if(delta>0){
+            wallet.cyberDollarAccum +delta;
         }
         wallet.cyberDollar += delta;
         const rawData = await this.walletRepo.save(wallet);

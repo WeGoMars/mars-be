@@ -14,6 +14,9 @@ export class Wallet {
   @Column({ type: 'float', default: 0 })
   cyberDollar: number;
 
+  @Column({ type: 'float', default: 0 })
+  cyberDollarAccum: number;
+
   @CreateDateColumn()
   createdAt: Date;
 
