@@ -53,16 +53,13 @@ export class UserPreference {
   riskLevel: RiskLevel;
 
   @Column({
-    type: 'enum',
-    enum: InvestmentStrategy,
-    array: true,
+    type: 'json',
+    nullable: true,
   })
   preferredStrategies: InvestmentStrategy[];
 
   @Column({
-    type: 'enum',
-    enum: Sector,
-    array: true,
+    type: 'json',
   })
   preferredSectors: Sector[];
 

@@ -7,16 +7,29 @@ import { CreateUserPreferenceDto } from './dtos/request/create-user-preference.d
 
 @Injectable()
 export class AiService {
-    constructor(
-        @InjectRepository(UserPreference)private prefRepo:Repository<UserPreference>
-    ){}
+  constructor(
+    @InjectRepository(UserPreference)
+    private prefRepo: Repository<UserPreference>,
+  ) {}
 
-    async createUserPreference(user:UserDto, dto:CreateUserPreferenceDto){
-        const pref = this.prefRepo.create({
-            ...dto,
-            user:{id:user.id}
-        });
+  async upsertUserPreference(user: UserDto, dto: CreateUserPreferenceDto) {
+    const existing = await this.prefRepo.findOne({
+      where: { user: { id: user.id } },
+    });
 
-        return await this.prefRepo.save(pref);
+    if (existing) {
+      // 업데이트
+      this.prefRepo.merge(existing, {
+        ...dto,
+      });
+      return await this.prefRepo.save(existing);
+    } else {
+      // 신규 생성
+      const newPref = this.prefRepo.create({
+        ...dto,
+        user: { id: user.id },
+      });
+      return await this.prefRepo.save(newPref);
     }
+  }
 }
