@@ -27,6 +27,7 @@ export class AiController {
   async getRecommend(@Session() session: any){
     const user = getUserOrThrow(session);
     const data = await this.aiService.getPerfectPF(user);
+    return new BaseResponseDto(data,'AI answer');
   }
 
 

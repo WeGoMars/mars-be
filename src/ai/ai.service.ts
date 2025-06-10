@@ -6,6 +6,7 @@ import { UserDto } from 'src/users/dtos/response/user.dto';
 import { CreateUserPreferenceDto } from './dtos/request/create-user-preference.dto';
 import { PortfolioService } from 'src/portfolio/portfolio.service';
 import { StockService } from 'src/stock/stock.service';
+import { RecommendationResponse } from './dtos/response/recommandation.dto';
 
 @Injectable()
 export class AiService {
@@ -13,7 +14,7 @@ export class AiService {
     @InjectRepository(UserPreference)
     private prefRepo: Repository<UserPreference>,
     private pfService: PortfolioService,
-    private stockService: StockService
+    private stockService: StockService,
   ) {}
 
   async upsertUserPreference(user: UserDto, dto: CreateUserPreferenceDto) {
@@ -40,18 +41,31 @@ export class AiService {
   async getPreference(user: UserDto) {
     const data = await this.prefRepo.findOne({
       where: { user: { id: user.id } },
-    })
-    if(!data){
-        throw new BadRequestException('you did not created your user preference');
+    });
+    if (!data) {
+      throw new BadRequestException('you did not created your user preference');
     }
     return data;
   }
 
-  async getPerfectPF(user: UserDto){
+  async getPerfectPF(user: UserDto) {
     const simplePF = await this.pfService.getMySimplePF(user);
     const stockPF = await this.pfService.getMyStockPortfolio(user);
     const marketReport = await this.stockService.getMarketData();
-    console.log(simplePF,stockPF, marketReport);
-  }
 
+    const payload = {
+      simplePF,
+      stockPF,
+      marketReport,
+    };
+
+    const response = await fetch('http://localhost:5000/api/ai/test', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    const result: RecommendationResponse = await response.json();
+    return result;
+  }
 }
