@@ -3,10 +3,16 @@ import { AiService } from './ai.service';
 import { AiController } from './ai.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserPreference } from './entities/user-preference.entity';
+import { PortfolioModule } from 'src/portfolio/portfolio.module';
+import { StockModule } from 'src/stock/stock.module';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([UserPreference])],
+  imports: [
+    TypeOrmModule.forFeature([UserPreference]),
+    PortfolioModule,
+    StockModule,
+  ],
   providers: [AiService],
-  controllers: [AiController]
+  controllers: [AiController],
 })
 export class AiModule {}

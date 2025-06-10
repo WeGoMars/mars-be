@@ -236,9 +236,14 @@ export class PortfolioService {
     const evalGain = totalEvalAmount - totalInvested;
     const returnRate = totalInvested ? evalGain / totalInvested : 0;
 
-    const wallet = await this.walletRepo.findOneOrFail({
-      where: { user: { id: user.id } },
-    });
+    let wallet;
+    try{
+      wallet = await this.walletRepo.findOneOrFail({
+        where: { user: { id: user.id } },
+      });
+    }catch(e){
+      throw new NotFoundException('사용자의 지갑이 존재하지 않습니다.');
+    }
 
     return new UserPortfolioDto({
       totalAsset: totalEvalAmount + wallet.cyberDollar,

@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, ILike, Repository } from 'typeorm';
+import { Brackets, ILike, In, Repository } from 'typeorm';
 import { Stock } from './entities/stock.entity';
 import { StockOhlcv } from './entities/stock-ohlcv.entity';
 import { ChartRequestDto, Interval } from './dtos/request/chart-request.dto';
@@ -13,6 +13,8 @@ import { SearchStocksDto } from './dtos/request/search-stocks.dto';
 import { SearchedStock } from './dtos/response/searched-stock.dto';
 import { ListStocksDto } from './dtos/request/list-stocks.dto';
 import { StockLatestPriceView } from './entities/stock-latest-price.view';
+import { MarketMetricType, StockMarket } from './entities/stock-market.entity';
+import { MarketDataDto } from './dtos/response/market-data.dto';
 
 @Injectable()
 export class StockService {
@@ -26,6 +28,8 @@ export class StockService {
     private financeRepo: Repository<StockFinancials>,
     @InjectRepository(StockLatestPriceView)
     private stockViewRepo: Repository<StockLatestPriceView>,
+    @InjectRepository(StockMarket)
+    private marketRepo: Repository<StockMarket>,
   ) {}
 
   async assertSymbolExists(symbol: string): Promise<void> {
@@ -174,5 +178,75 @@ export class StockService {
 
     const rawData = await qb.getRawMany();
     return rawData.map((row) => new SearchedStock(row));
+  }
+
+  async getMarketData(): Promise<MarketDataDto> {
+    // 1. S&P500 1m~12m 수익률 가져오기
+    const snpKeys = [
+      MarketMetricType.SNP500_1M_RETURN,
+      MarketMetricType.SNP500_2M_RETURN,
+      MarketMetricType.SNP500_3M_RETURN,
+      MarketMetricType.SNP500_4M_RETURN,
+      MarketMetricType.SNP500_5M_RETURN,
+      MarketMetricType.SNP500_6M_RETURN,
+      MarketMetricType.SNP500_7M_RETURN,
+      MarketMetricType.SNP500_8M_RETURN,
+      MarketMetricType.SNP500_9M_RETURN,
+      MarketMetricType.SNP500_10M_RETURN,
+      MarketMetricType.SNP500_11M_RETURN,
+      MarketMetricType.SNP500_12M_RETURN,
+    ];
+
+    const snpItems = await this.marketRepo.find({
+      where: { name: In(snpKeys) },
+      order: { name: 'ASC', timestamp: 'DESC' },
+    });
+
+    const latestSnpByType = new Map<string, StockMarket>();
+    for (const item of snpItems) {
+      if (!latestSnpByType.has(item.name)) {
+        latestSnpByType.set(item.name, item); // 가장 최신만 선택
+      }
+    }
+
+    const snp500_returns = Object.fromEntries(
+      [...latestSnpByType.entries()].map(([name, item]) => {
+        const label = name
+          .replace('SNP500_', '')
+          .replace('_RETURN', '')
+          .toLowerCase(); // e.g., '1m'
+        return [label, item.value];
+      }),
+    );
+
+    // 2. VIX 최근 15개
+    const vixItems = await this.marketRepo.find({
+      where: { name: MarketMetricType.VIX },
+      order: { timestamp: 'DESC' },
+      take: 15,
+    });
+
+    const vix = vixItems
+      .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
+      .map((item) => item.value);
+
+    // 3. FEDFUNDS 평균 최근 10개
+    const fedItems = await this.marketRepo.find({
+      where: { name: MarketMetricType.FEDFUNDS_AVERAGE },
+      order: { timestamp: 'DESC' },
+      take: 10,
+    });
+
+    const fedfunds_average = Object.fromEntries(
+      fedItems
+        .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
+        .map((item) => [item.timestamp.slice(0, 7), item.value]), // 'YYYY-MM'
+    );
+
+    return {
+      snp500_returns,
+      vix,
+      fedfunds_average,
+    };
   }
 }
