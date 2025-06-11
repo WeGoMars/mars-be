@@ -52,14 +52,16 @@ export class AiService {
     const simplePF = await this.pfService.getMySimplePF(user);
     const stockPF = await this.pfService.getMyStockPortfolio(user);
     const marketReport = await this.stockService.getMarketData();
+    const userPreference = await this.getPreference(user);
 
     const payload = {
       simplePF,
       stockPF,
       marketReport,
+      userPreference,
     };
 
-    const response = await fetch('http://localhost:5000/api/ai/test', {
+    const response = await fetch('http://ai-recommendations:5000/recommend/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
