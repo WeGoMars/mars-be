@@ -19,6 +19,9 @@ import { AggregatedPortfolioDto } from './dtos/internal/aggregated-portfolio.dto
 import { Wallet } from 'src/wallet/entities/wallet.entity';
 import { UserPortfolioDto } from './dtos/response/user-portfolio.dto';
 import { StockPortfolioDto } from './dtos/response/stock-portfolio.dto';
+import { HistoryPortfolioDto } from './dtos/response/history-portfolio.dto';
+
+
 
 @Injectable()
 export class PortfolioService {
@@ -257,16 +260,53 @@ export class PortfolioService {
   }
 
   async getMyStockPortfolio(user: UserDto) {
-  const items = await this.aggregateUserPortfolio(user);
+    const items = await this.aggregateUserPortfolio(user);
 
-  return items.map((item) => new StockPortfolioDto({
-    symbol: item.stock.symbol,
-    name: item.stock.name,
-    quantity: item.quantity,
-    avgBuyPrice: item.avgBuyPrice,
-    evalAmount: item.evalAmount,
-    evalGain: item.evalGain,
-    returnRate: item.returnRate,
-  }));
-}
+    return items.map((item) => new StockPortfolioDto({
+      symbol: item.stock.symbol,
+      name: item.stock.name,
+      quantity: item.quantity,
+      avgBuyPrice: item.avgBuyPrice,
+      evalAmount: item.evalAmount,
+      evalGain: item.evalGain,
+      returnRate: item.returnRate,
+    }));
+  }
+
+  // 새로운 기능: 주식 거래내역 조회
+  async getTradeHistory(user: UserDto) {
+    // 사용자의 모든 거래 내역을 조회 (최신순)
+    const trades = await this.tradeRepo
+      .createQueryBuilder('trade')
+      .innerJoinAndSelect('trade.stock', 'stock')
+      .where('trade.user.id = :userId', { userId: user.id })
+      .orderBy('trade.createdAt', 'DESC')
+      .getMany();
+      
+    // 각 거래의 현재 주가 정보를 가져오기 위해 stock_id 수집
+    const stockIds = [...new Set(trades.map(trade => trade.stock.id))];
+    const currentPrices = await this.stockViewRepo.find({
+      where: { stock_id: In(stockIds) },
+    });
+    // stock_id를 키로 하는 현재가 맵 생성
+    const priceMap = new Map(
+      currentPrices.map(price => [price.stock_id, price.hourly_close])
+    );
+    // 각 거래별로 수익률 계산
+    return trades.map(trade => {
+      const currentPrice = priceMap.get(trade.stock.id) ?? 0;
+      
+      // 수익률 계산: (현재가 - 거래가) / 거래가
+      const returnRate = trade.price > 0 ? (currentPrice - trade.price) / trade.price : 0;
+
+      return new HistoryPortfolioDto({
+        symbol: trade.stock.symbol,
+        name: trade.stock.name,
+        quantity: trade.quantity,
+        currentPrice: trade.price,
+        createdAt: trade.createdAt,
+        returnRate,
+      });
+    });
+  }
 }
