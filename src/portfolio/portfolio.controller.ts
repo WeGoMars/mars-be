@@ -57,7 +57,7 @@ export class PortfolioController {
     @Get('history')
   async getMyHistoryPF(@Session() session: any) {
     const user = getUserOrThrow(session);
-    const data = await this.portfolioService.getMyStockPortfolio(user);
+    const data = await this.portfolioService.getTradeHistory(user);
     return new BaseResponseDto(data, 'this is your history PF!');
   }
 }
